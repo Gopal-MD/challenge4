@@ -1,0 +1,4 @@
+{"timestamp": "2026-07-08T10:36:26.337186+00:00", "severity": "INFO", "message": "MatchDay Command API starting up", "logger": "app.main", "module": "main", "funcName": "on_startup", "lineNo": 144}
+{"timestamp": "2026-07-08T10:36:26.337186+00:00", "severity": "INFO", "message": "Firestore mode: in-memory mock", "logger": "app.main", "module": "main", "funcName": "on_startup", "lineNo": 147}
+{"timestamp": "2026-07-08T10:36:26.343803+00:00", "severity": "INFO", "message": "Vertex AI: disabled (fallback mode)", "logger": "app.main", "module": "main", "funcName": "on_startup", "lineNo": 148}
+{"timestamp": "2026-07-08T10:36:26.344325+00:00", "severity": "INFO", "message": "Google Maps: disabled (fallback mode)", "logger": "app.main", "module": "main", "funcName": "on_startup", "lineNo": 149}
