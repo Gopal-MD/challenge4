@@ -65,6 +65,7 @@ export default function App() {
         className="visually-hidden"
         role="status"
       />
+      <a href="#main-content" className="skip-link">Skip to main content</a>
 
       {/* Header */}
       <header className="header" role="banner">
