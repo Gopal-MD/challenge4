@@ -170,6 +170,7 @@ docker-compose.override.yml
 !package.json
 !package-lock.json
 !tsconfig.json
+!tsconfig.node.json
 !vitest.config.json
 !manifest.json
 !firebase.json
