@@ -27,12 +27,7 @@ export default defineConfig({
             urlPattern: /\/api\/crowd-heatmap/,
             handler: 'StaleWhileRevalidate',
             options: { cacheName: 'heatmap-cache', expiration: { maxAgeSeconds: 60 } },
-          },
-          {
-            urlPattern: /\/api\/route/,
-            handler: 'NetworkFirst',
-            options: { cacheName: 'route-cache', networkTimeoutSeconds: 5 },
-          },
+          }
         ],
       },
     }),
