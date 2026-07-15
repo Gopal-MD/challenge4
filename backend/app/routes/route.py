@@ -41,7 +41,7 @@ async def calculate_route(request: RouteRequest) -> RouteResponse:
     if maps_result:
         source = "maps_api"
         route_data = maps_result
-        logger.info(f"Route calculated via Maps API: {request.start_location} → {request.destination}")
+        logger.info(f"Route calculated via Maps API: {request.start_location} -> {request.destination}")
     else:
         source = "fallback_rules"
         route_data = generate_fallback_route(
@@ -50,7 +50,7 @@ async def calculate_route(request: RouteRequest) -> RouteResponse:
             accessibility_reqs=request.accessibility_requirements,
             route_type=request.preferred_route_type,
         )
-        logger.info(f"Route calculated via fallback rules: {request.start_location} → {request.destination}")
+        logger.info(f"Route calculated via fallback rules: {request.start_location} -> {request.destination}")
 
     primary = WaypointRoute(
         waypoints=route_data["waypoints"],

@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     google_cloud_project: str = ""
     google_maps_api_key: str = ""
     vertex_ai_location: str = "us-central1"
+    gemini_api_key: str = ""
 
     # Firestore
     use_real_firestore: bool = False

@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import './i18n'
 import './index.css'
+import './firebase'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

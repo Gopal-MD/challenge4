@@ -13,6 +13,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "firebase": "^12.16.0",
     "matchday-command": "file:../..",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

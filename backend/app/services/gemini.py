@@ -118,20 +118,16 @@ class GeminiService:
             return self._model
         self._initialized = True
         try:
-            import vertexai  # type: ignore
-            from vertexai.generative_models import GenerativeModel  # type: ignore
+            import google.generativeai as genai  # type: ignore
             from app.config import settings
 
-            if not settings.google_cloud_project:
-                logger.info("GOOGLE_CLOUD_PROJECT not set — Gemini disabled, using rule-based fallback")
+            if not settings.gemini_api_key:
+                logger.info("GEMINI_API_KEY not set — Gemini disabled, using rule-based fallback")
                 return None
 
-            vertexai.init(
-                project=settings.google_cloud_project,
-                location=settings.vertex_ai_location,
-            )
-            self._model = GenerativeModel("gemini-2.0-flash")
-            logger.info("Gemini 2.0 Flash initialized successfully")
+            genai.configure(api_key=settings.gemini_api_key)
+            self._model = genai.GenerativeModel("gemini-flash-latest")
+            logger.info("Gemini Flash Latest initialized successfully via Google AI Studio")
         except Exception as e:
             logger.warning(f"Gemini initialization failed: {e}. All AI calls will use fallback.")
             self._model = None
