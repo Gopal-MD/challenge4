@@ -1,4 +1,4 @@
-name: MatchDay Command CI/CD
+name: FanOps Unified CI
 
 on:
   push:
@@ -7,103 +7,31 @@ on:
     branches: [main, develop]
 
 jobs:
-  backend-tests:
-    name: Backend Tests
+  ci:
+    name: Build, Lint & Test
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
-      - run: pip install -r requirements.txt
-        working-directory: backend
-      - run: pytest tests/ --cov=app --cov-report=xml --cov-report=term-missing -v
-        working-directory: backend
-        env:
-          USE_REAL_FIRESTORE: 'false'
-          GOOGLE_CLOUD_PROJECT: ''
-          GOOGLE_MAPS_API_KEY: ''
-      - uses: codecov/codecov-action@v3
-        with:
-          file: backend/coverage.xml
-          flags: backend
 
-  frontend-pwa-tests:
-    name: Fan PWA Tests
-    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 22
           cache: npm
-          cache-dependency-path: frontend/fan-pwa/package-lock.json
-      - run: npm ci
-        working-directory: frontend/fan-pwa
-      - run: npm run test:coverage
-        working-directory: frontend/fan-pwa
-      - run: npm run build
-        working-directory: frontend/fan-pwa
-        env:
-          VITE_API_BASE_URL: http://localhost:8080
 
-  frontend-dashboard-tests:
-    name: Ops Dashboard Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: npm
-          cache-dependency-path: frontend/ops-dashboard/package-lock.json
-      - run: npm ci
-        working-directory: frontend/ops-dashboard
-      - run: npm run test:coverage
-        working-directory: frontend/ops-dashboard
-      - run: npm run build
-        working-directory: frontend/ops-dashboard
-        env:
-          VITE_API_BASE_URL: http://localhost:8080
+      - name: Install Dependencies
+        run: npm ci
 
-  deploy-staging:
-    name: Deploy Staging
-    needs: [backend-tests, frontend-pwa-tests, frontend-dashboard-tests]
-    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-      - run: gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/matchday-backend:${{ github.sha }} backend/
-      - run: |
-          gcloud run deploy matchday-backend-staging \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/matchday-backend:${{ github.sha }} \
-            --platform managed --region us-central1 --allow-unauthenticated \
-            --memory 2Gi --cpu 2 \
-            --set-env-vars USE_REAL_FIRESTORE=true,GOOGLE_CLOUD_PROJECT=${{ secrets.GCP_PROJECT_ID }}
+      - name: Code Quality - Linting Check
+        run: npm run lint
 
-  deploy-production:
-    name: Deploy Production
-    needs: [backend-tests, frontend-pwa-tests, frontend-dashboard-tests]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-      - run: gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/matchday-backend:${{ github.sha }} backend/
-      - run: |
-          gcloud run deploy matchday-backend \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/matchday-backend:${{ github.sha }} \
-            --platform managed --region us-central1 --allow-unauthenticated \
-            --memory 2Gi --cpu 2 --timeout 60 --max-instances 1000 \
-            --set-env-vars USE_REAL_FIRESTORE=true,GOOGLE_CLOUD_PROJECT=${{ secrets.GCP_PROJECT_ID }}
+      - name: Type Check (TypeScript compiler)
+        run: npx tsc --noEmit
+
+      - name: Run Vitest Unit & Integration Tests
+        run: npm run test
+
+      - name: Production Build Check
+        run: npm run build

@@ -12,6 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as OpsRouteImport } from './routes/ops'
 import { Route as FanRouteImport } from './routes/fan'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiSystemRouteImport } from './routes/api/system'
+import { Route as ApiStadiumRouteImport } from './routes/api/stadium'
+import { Route as ApiHealthzRouteImport } from './routes/api/healthz'
+import { Route as ApiAssistantRouteImport } from './routes/api/assistant'
 
 const OpsRoute = OpsRouteImport.update({
   id: '/ops',
@@ -28,35 +32,93 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSystemRoute = ApiSystemRouteImport.update({
+  id: '/api/system',
+  path: '/api/system',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStadiumRoute = ApiStadiumRouteImport.update({
+  id: '/api/stadium',
+  path: '/api/stadium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHealthzRoute = ApiHealthzRouteImport.update({
+  id: '/api/healthz',
+  path: '/api/healthz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAssistantRoute = ApiAssistantRouteImport.update({
+  id: '/api/assistant',
+  path: '/api/assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/fan': typeof FanRoute
   '/ops': typeof OpsRoute
+  '/api/assistant': typeof ApiAssistantRoute
+  '/api/healthz': typeof ApiHealthzRoute
+  '/api/stadium': typeof ApiStadiumRoute
+  '/api/system': typeof ApiSystemRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/fan': typeof FanRoute
   '/ops': typeof OpsRoute
+  '/api/assistant': typeof ApiAssistantRoute
+  '/api/healthz': typeof ApiHealthzRoute
+  '/api/stadium': typeof ApiStadiumRoute
+  '/api/system': typeof ApiSystemRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/fan': typeof FanRoute
   '/ops': typeof OpsRoute
+  '/api/assistant': typeof ApiAssistantRoute
+  '/api/healthz': typeof ApiHealthzRoute
+  '/api/stadium': typeof ApiStadiumRoute
+  '/api/system': typeof ApiSystemRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/fan' | '/ops'
+  fullPaths:
+    | '/'
+    | '/fan'
+    | '/ops'
+    | '/api/assistant'
+    | '/api/healthz'
+    | '/api/stadium'
+    | '/api/system'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/fan' | '/ops'
-  id: '__root__' | '/' | '/fan' | '/ops'
+  to:
+    | '/'
+    | '/fan'
+    | '/ops'
+    | '/api/assistant'
+    | '/api/healthz'
+    | '/api/stadium'
+    | '/api/system'
+  id:
+    | '__root__'
+    | '/'
+    | '/fan'
+    | '/ops'
+    | '/api/assistant'
+    | '/api/healthz'
+    | '/api/stadium'
+    | '/api/system'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FanRoute: typeof FanRoute
   OpsRoute: typeof OpsRoute
+  ApiAssistantRoute: typeof ApiAssistantRoute
+  ApiHealthzRoute: typeof ApiHealthzRoute
+  ApiStadiumRoute: typeof ApiStadiumRoute
+  ApiSystemRoute: typeof ApiSystemRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +144,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/system': {
+      id: '/api/system'
+      path: '/api/system'
+      fullPath: '/api/system'
+      preLoaderRoute: typeof ApiSystemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/stadium': {
+      id: '/api/stadium'
+      path: '/api/stadium'
+      fullPath: '/api/stadium'
+      preLoaderRoute: typeof ApiStadiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/healthz': {
+      id: '/api/healthz'
+      path: '/api/healthz'
+      fullPath: '/api/healthz'
+      preLoaderRoute: typeof ApiHealthzRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/assistant': {
+      id: '/api/assistant'
+      path: '/api/assistant'
+      fullPath: '/api/assistant'
+      preLoaderRoute: typeof ApiAssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +179,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FanRoute: FanRoute,
   OpsRoute: OpsRoute,
+  ApiAssistantRoute: ApiAssistantRoute,
+  ApiHealthzRoute: ApiHealthzRoute,
+  ApiStadiumRoute: ApiStadiumRoute,
+  ApiSystemRoute: ApiSystemRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
